@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Customer satisfaction survey responses and complaints",
+      "type": "object",
+      "properties": {
+        "caseNumber": { "type": "string", "description": "Unique generated identifier" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Submission time" },
+        "customerName": { "type": "string" },
+        "companyName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "frequency": { "type": "string" },
+        "contactMethod": { "type": "string" },
+        "scores": {
+          "type": "object",
+          "description": "Survey item scores (1 to 5)"
+        },
+        "otherSuggestions": { "type": "string" },
+        "productName": { "type": "string" },
+        "batchNumber": { "type": "string" },
+        "problemCategory": { "type": "string" },
+        "problemDescription": { "type": "string" },
+        "improvementSuggestion": { "type": "string" },
+        "images": { "type": "array" },
+        "status": { "type": "string", "enum": ["pending", "processing", "completed"] },
+        "severity": { "type": "string", "enum": ["normal", "urgent"] },
+        "aiSentiment": { "type": "string", "enum": ["positive", "neutral", "negative"] },
+        "aiKeywords": { "type": "array" },
+        "aiCategory": { "type": "string" },
+        "assignedRole": { "type": "string" },
+        "logs": { "type": "array" }
+      },
+      "required": ["caseNumber", "timestamp", "customerName", "phone"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "App settings and roles",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Customer feedback record collection"
+    },
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "Global application setting parameters"
+    }
+  }
+}

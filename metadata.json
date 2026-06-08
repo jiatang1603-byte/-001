@@ -1,0 +1,6 @@
+{
+  "name": "佳堂實業客戶回饋平台",
+  "description": "佳堂實業線上客戶滿意度調查與客訴品質管理平台，提供海洋風格的易用問卷與智能分析管理處置系統。",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

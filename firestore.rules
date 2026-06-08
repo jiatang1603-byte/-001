@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net: default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 2. Feedback Rules
+    match /feedback/{feedbackId} {
+      // Allow public creation of feedback questionnaires with verification parameters
+      allow create: if isValidId(feedbackId) 
+        && incoming().caseNumber is string 
+        && incoming().caseNumber.size() <= 64
+        && incoming().customerName is string
+        && incoming().customerName.size() <= 128;
+
+      // Allow authenticated administrators/staff to read feedback
+      allow read: if isSignedIn();
+
+      // Ensure that only specific management keys may be updated by signed-in operators
+      allow update: if isSignedIn() 
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'logs', 'severity', 'assignedRole']);
+
+      // Only administrators can delete records
+      allow delete: if isSignedIn();
+    }
+
+    // 3. System settings and logs
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+  }
+}
